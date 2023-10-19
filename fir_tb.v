@@ -3,7 +3,7 @@
 
 `timescale 1ns / 1ps
 
-`define CYCLE_TIME 10
+`define CYCLE_TIME 10;
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -158,11 +158,13 @@ module fir_tb
 	//Clock
 	initial axis_clk = 1'b0;
 	always #(CYCLE/2.0) axis_clk = (~axis_clk);
-
     initial begin
+        reset_task;
 		for(patcount = 1;patcount <= PATNUM; patcount = patcount + 1)begin
-			reset_task; // necessary for resetting every time 
+			// reset_task; // necessary for resetting every time 
+            $display("1");
             test_case_gen_task;
+            
 			//Check FIR is idle, if not, wait until FIR is idle
 			check_idle_task;
 			axi_in_task;
@@ -288,6 +290,7 @@ module fir_tb
             if( (rdata & mask) != (exp_data & mask)) begin
                 $display("ERROR: exp = %d, rdata = %d", exp_data, rdata);
                 error_coef <= 1;
+                $finish;
             end else begin
                 $display("OK: exp = %d, rdata = %d", exp_data, rdata);
             end
@@ -341,6 +344,7 @@ module fir_tb
             if (sm_tdata !== in2) begin
                 $display("[ERROR] [Pattern %d] Golden answer: %d, Your answer: %d", pcnt, in2, sm_tdata);
                 error <= 1;
+                $finish;
             end
             else begin
                 $display("[PASS] [Pattern %d] Golden answer: %d, Your answer: %d", pcnt, in2, sm_tdata);
@@ -425,7 +429,7 @@ module fir_tb
     end
 
     // Prevent hang
-    integer timeout = (1000000);
+    integer timeout = (100000);
     initial begin
         while(timeout > 0) begin
             @(posedge axis_clk);

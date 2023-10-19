@@ -170,18 +170,24 @@ localparam STR_NEWIN = 8;
 localparam STR_STORE = 10;
 
 always@(posedge axis_clk) begin
-    if(!axis_rst_n) ap_start <= 1'b1;
-    else if(cs_str == STR_RESET_DATARAM) ap_start <= 1'b0;
+    if(!axis_rst_n) ap_start <= 1'b0;
+    else if(cs_lite == LITE_done && wvalid)
+        ap_start <= wdata[0];
+    else ap_start <= 0;
+    
 end
 
 always@(posedge axis_clk) begin
     if(!axis_rst_n) ap_done <= 1'b0;
     else if(ns_str == STR_OUT && finish_flag) ap_done <= 1'b1;
+    else if(cs_str == STR_FIRST && ss_tvalid) ap_done <= 1'b0;
+    
 end
 
 always@(posedge axis_clk) begin
     if(!axis_rst_n) ap_idle <= 1'b1;
     else if(ns_str == STR_OUT && finish_flag) ap_idle <= 1'b1;
+    else if(cs_str == STR_FIRST && ss_tvalid) ap_idle <= 1'b0;
 end
 
 always @(posedge axis_clk) begin
@@ -214,7 +220,8 @@ always@(*) begin
             else        ns_lite = cs_lite;
         end
         LITE_read:      ns_lite = LITE_idle;
-        LITE_done:      ns_lite = LITE_done;
+        LITE_done:  if(cs_str == STR_OUT && finish_flag) ns_lite = LITE_idle;      
+                    else ns_lite = LITE_done;
         default:        ns_lite = LITE_idle;
     endcase
 end
@@ -470,7 +477,8 @@ always@(*) begin
         STR_CAL: 
             if(cnt > 10) ns_str = STR_OUT; 
             else ns_str = cs_str;
-        STR_OUT: ns_str = STR_SHIFT_READ;
+        STR_OUT:    if(finish_flag) ns_str = STR_IDLE;
+                    else ns_str = STR_SHIFT_READ;
         STR_SHIFT_READ: ns_str = STR_SHIFT_WRITE;
         STR_SHIFT_WRITE: 
             if(cnt == 10) ns_str = STR_NEWIN;
@@ -569,7 +577,8 @@ always @(posedge axis_clk) begin
     if(!axis_rst_n) curr_coef_addr <= 0;
     else begin
         case(cs_str)
-            STR_CAL: curr_coef_addr <= curr_coef_addr + 4;
+            STR_IDLE: curr_coef_addr <= 0;
+            STR_CAL:  curr_coef_addr <= curr_coef_addr + 4;
             STR_STORE: curr_coef_addr <= 0;
         endcase
     end
@@ -596,7 +605,8 @@ end
 
 always @(posedge axis_clk) begin
     if(!axis_rst_n) finish_flag <= 0;
-    else if(ss_tlast) finish_flag <= 1;
+    else if(ss_tlast && ss_tready) finish_flag <= 1;
+    else if(cs_str == STR_IDLE) finish_flag <= 0;
 end
 
 
