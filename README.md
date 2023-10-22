@@ -10,7 +10,7 @@
 | runme.log                 | Synthesis log             |
 | timing.txt                | Timing Report             |
 | utilization_report.txt    | Utilization Report        |
-| Report.pdf                | Lab Report                |
+| Lab3_report.pdf           | Lab Report                |
 
 ## Waveform
 
