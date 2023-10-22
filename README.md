@@ -5,22 +5,29 @@
 | ------------------------- | ------------------------- |
 | fir.v                     | Verilog Design            |
 | fir_tb.v                  | Test Bench                |
-| Simulation.log            | Behavioral Simulation log |
+| Simulation_log            | Behavioral Simulation log |
 | fir_utilization_synth.rpt | Synthesis Report          |
 | runme.log                 | Synthesis log             |
-| timing_report.txt         | Timing Report             |
+| timing.txt                | Timing Report             |
 | utilization_report.txt    | Utilization Report        |
 | Report.pdf                | Lab Report                |
 
 ## Waveform
 
 **ap_start**
-(https://github.com//2023-FALL-NYCU-SOC-LAB3-FIR/blob/main/ap_start.png)
+
+![Configuration write](https://github.com/chickenchennnn/Lab3/blob/main/ap_start.png)
 
 **ap_done**
-(https://github.com//2023-FALL-NYCU-SOC-LAB3-FIR/blob/main/ap_done.png)
 
-Number of clock cycles from ap_start to ap_done = (78875 - 745) / 10 = 7813 cycles
+![Configuration write](https://github.com/chickenchennnn/Lab3/blob/main/ap_done.png)
+
+Number of clock cycles from ap_start to ap_done = (88775 - 985) / 10 = 8779 cycles
 
 **Xn stream-in, and Yn stream-out**
-(https://github.com//2023-FALL-NYCU-SOC-LAB3-FIR/blob/main/ss&sm.png)
+
+![Configuration write](https://github.com/chickenchennnn/Lab3/blob/main/ss&sm.png)
+
+**last**
+
+![Configuration write](https://github.com/chickenchennnn/Lab3/blob/main/ss&sm_last.png)
